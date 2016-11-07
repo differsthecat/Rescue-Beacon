@@ -8,6 +8,7 @@ api_key='***REMOVED***'
 
 # Reads data from the tty->USB serial port
 def readData():
+	GPRMC = False
         ser = serial.Serial(
 
                 port='/dev/ttyUSB0',
@@ -17,17 +18,18 @@ def readData():
                 bytesize=serial.EIGHTBITS,
                 timeout=1
         )
-	# Needs to be big enough range to get GPRC data
+	# Needs to be big enough range to get GPRMC data
 	# Can also use GPGGA data
-        for y in range(0, 5):
+        while(GPRMC == False):
                 counter=0
                 x=ser.readline()
-                # Add logic to parse x to look for GPRC
-                # If it contains it: parse the GPRC string 
-                # for latitude and longitude data
-                # else: keep reading from serial  
-                print x
-
+		
+                if "GPRMC" in x:
+			GPRMC = True  
+               		print x
+			# Parse GPRMC string
+		else:
+			print "Nooooo"
         # Assign parsed gps coordinates here
 	lat = '28.2432'
         long = '-71.2342'
