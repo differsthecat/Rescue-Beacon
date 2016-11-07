@@ -6,8 +6,11 @@ import time
 # Key to ThingSpeak channel that data is sent to
 api_key='***REMOVED***'
 
+def InDistress():
+	time.sleep(10)
+
 # Reads data from the tty->USB serial port
-def readData():
+def GetLocation():
 	GPRMC = False
         ser = serial.Serial(
 
@@ -24,16 +27,21 @@ def readData():
                 counter=0
                 x=ser.readline()
 		
+		# Needs to be thorouhly tested
                 if "GPRMC" in x:
 			GPRMC = True  
                		print x
-			# Parse GPRMC string
+			dataList = x.split(',')
+			lat = float(dataList[4])*100
+			long = float(dataList[6])*100
+			if dataList[5] == "S":
+				lat = lat * -1
+			if dataList[7] == "N":
+				long = long * -1
 		else:
 			print "Nooooo"
-        # Assign parsed gps coordinates here
-	lat = '28.2432'
-        long = '-71.2342'
-        coords = (lat, long)
+	
+	coords = (lat, long)
         return coords
 
 # posts data to ThingSpeak channel
@@ -44,8 +52,9 @@ def sendData(lat2,long2):
     time.sleep(3)
 
 def main():
-  data = readData()
-  sendData(lat2=data[0],long2=data[1])
+  InDistress()
+  data = GetLocation()
+  SendLocation(lat2=data[0],long2=data[1])
 
 if __name__ == '__main__':
   main()
