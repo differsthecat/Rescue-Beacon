@@ -33,28 +33,29 @@ def GetLocation():
                		print x
 			dataList = x.split(',')
 			lat = float(dataList[4])*100
-			long = float(dataList[6])*100
+			lon = float(dataList[6])*100
 			if dataList[5] == "S":
 				lat = lat * -1
-			if dataList[7] == "N":
-				long = long * -1
+			if dataList[7] == "W":
+				lon = lon * -1
+			# coords = (lat, long)
+			SendLocation(lat,lon)
 		else:
 			print "Nooooo"
-	
-	coords = (lat, long)
-        return coords
+        return
 
 # posts data to ThingSpeak channel
-def sendData(lat2,long2):
-    payload = {'api_key': api_key, 'field1': lat2, 'field2': long2 }
+def sendLocation(lat,lon):
+    payload = {'api_key': api_key, 'field1': lat, 'field2': lon }
     r = requests.post('https://api.thingspeak.com/update', params=payload)
     print "Result: ", r.text
     time.sleep(3)
 
 def main():
   InDistress()
-  data = GetLocation()
-  SendLocation(lat2=data[0],long2=data[1])
+  while(true)
+  	GetLocation()
+ 	time.sleep(5)
 
 if __name__ == '__main__':
   main()
