@@ -27,35 +27,60 @@ def GetLocation():
                 counter=0
                 x=ser.readline()
 		
-		# Needs to be thorouhly tested
+		# GPS Parsing
                 if "GPRMC" in x:
 			GPRMC = True  
                		print x
 			dataList = x.split(',')
-			lat = float(dataList[4])*100
-			lon = float(dataList[6])*100
-			if dataList[5] == "S":
-				lat = lat * -1
-			if dataList[7] == "W":
-				lon = lon * -1
-			# coords = (lat, long)
-			SendLocation(lat,lon)
-		else:
-			print "Nooooo"
+			
+			# Latitude is the third value in GPRMC string	
+			lat = float(dataList[3])/100
+			# Longitude is the third value in GPRMC sting
+			lon = float(dataList[5])/100
+			# If latitude is south, it is negative.
+			if dataList[4] == "S":
+				lat1 = int(lat) * -1
+				decimal1 = dataList[3][2:]
+				decimal2 = float(decimal1) 
+				finalLat = lat1 - decimal2
+				print finalLat
+			# If latitude is north, it is positive
+			else:
+				lat1 = int(lat)
+                                decimal1 = dataList[3][2:]
+				decimal = float(decimal1)/60
+				finalLat = lat1 + decimal
+				print finalLat
+			# If longitude is west, it is negative
+			if dataList[6] == "W":
+                                lon1 = int(lon) * -1
+                                decimal1 = dataList[5][3:]
+                                decimal = float(decimal1)/60
+                                finalLon = lon1 - decimal
+                                print finalLon
+			# If longitude is east, it is positive
+			else:
+				lon = int(lon)
+             			decimal1 = dataList[5][3:]
+                                decimal = float(decimal1)/60
+                                finalLon = lon1 + decimal
+                                print finalLon
+
+			
+			SendLocation(finalLat,finalLon)
         return
 
 # posts data to ThingSpeak channel
-def sendLocation(lat,lon):
+def SendLocation(lat,lon):
     payload = {'api_key': api_key, 'field1': lat, 'field2': lon }
     r = requests.post('https://api.thingspeak.com/update', params=payload)
     print "Result: ", r.text
-    time.sleep(3)
 
 def main():
   InDistress()
-  while(true)
-  	GetLocation()
- 	time.sleep(5)
+while(1 == 1):
+	GetLocation()
+ 	time.sleep(15)
 
 if __name__ == '__main__':
   main()
