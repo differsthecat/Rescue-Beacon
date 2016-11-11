@@ -41,7 +41,7 @@ def GetLocation():
 			if dataList[4] == "S":
 				lat1 = int(lat) * -1
 				decimal1 = dataList[3][2:]
-				decimal2 = float(decimal1) 
+				decimal2 = float(decimal1)/60
 				finalLat = lat1 - decimal2
 				print finalLat
 			# If latitude is north, it is positive
