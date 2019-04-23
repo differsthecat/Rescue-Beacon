@@ -4,7 +4,7 @@ import requests
 import time
 
 # Key to ThingSpeak channel that data is sent to
-api_key='***REMOVED***'
+api_key=''
 
 def InDistress():
 	time.sleep(10)
